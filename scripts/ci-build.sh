@@ -8,9 +8,9 @@ OUT="${HOWDY_OUT_DIR:-${ROOT}/out}"
 
 apt-get update
 apt-get install -y --no-install-recommends \
-	build-essential ca-certificates curl git cmake ninja-build \
+	build-essential ca-certificates curl git cmake ninja-build meson \
 	pkgconf gettext debhelper dpkg-dev fakeroot jq xz-utils \
-	libpam0g-dev libevdev-dev libinih-dev libacl1-dev \
+	libpam0g-dev libevdev-dev libacl1-dev \
 	libcurl4-openssl-dev libssl-dev libgtk-3-dev \
 	libavcodec-dev libavformat-dev libswscale-dev libavutil-dev \
 	libjpeg-dev libpng-dev libtiff-dev libwebp-dev libv4l-dev \
@@ -27,6 +27,7 @@ export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_
 
 bash "${ROOT}/scripts/build-opencv5.sh"
 bash "${ROOT}/scripts/build-yyjson.sh"
+bash "${ROOT}/scripts/build-inih.sh"
 
 if [[ -z "${UPSTREAM_TAG:-}" ]]; then
 	UPSTREAM_TAG="$(

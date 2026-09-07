@@ -1,3 +1,5 @@
 # Pinned third-party versions used by the Debian package build.
 OPENCV_VERSION=5.0.0
 YYJSON_VERSION=0.12.0
+INIH_VERSION=r61
+INIH_PKG_VERSION=61

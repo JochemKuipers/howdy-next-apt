@@ -12,7 +12,7 @@ One suite (`stable`) is built on **Debian trixie** and is intended for:
 - Debian sid/unstable
 - PikaOS (Debian sid-based)
 
-OpenCV 5 is vendored inside the package because Debian main still ships OpenCV 4. yyjson 0.12 is linked in for trixie, which only has 0.10.
+OpenCV 5, yyjson 0.12, and inih 61 are vendored because Debian trixie still ships OpenCV 4, yyjson 0.10, and an INIReader pkg-config version of 58.
 
 ## Install
 
@@ -57,6 +57,7 @@ CI rebuilds weekly from the latest Codeberg release, and on pushes to this packa
 | `debian/` | Debian packaging overlaid onto the upstream tarball |
 | `scripts/build-opencv5.sh` | Minimal OpenCV 5 shared libraries (core, dnn, videoio, …) |
 | `scripts/build-yyjson.sh` | Static yyjson 0.12 prefix |
+| `scripts/build-inih.sh` | Shared inih/INIReader 61 prefix |
 | `scripts/ci-build.sh` | Debian trixie package build |
 | `scripts/publish-apt.sh` | reprepro + InRelease + Pages tree |
 | `.github/workflows/publish.yml` | Build, sign, and deploy |

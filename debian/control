@@ -12,7 +12,6 @@ Build-Depends:
  g++,
  libpam0g-dev,
  libevdev-dev,
- libinih-dev (>= 59),
  libacl1-dev,
  libcurl4-openssl-dev,
  libssl-dev,
@@ -32,8 +31,9 @@ Description: C++ facial-recognition authentication for Linux
  Howdy Next is a C++ rewrite of Howdy. It provides a PAM module and
  CLI for Windows Hello-style facial authentication on Linux.
  .
- This unofficial package vendors OpenCV 5 (not yet in Debian main) and
- yyjson 0.12. Face models are not included; run
+ This unofficial package vendors OpenCV 5, yyjson 0.12, and inih 61
+ because Debian trixie does not satisfy those version requirements.
+ Face models are not included; run
  "sudo howdy download-models" after install.
  .
  Howdy is weaker than a password. Never use it as the sole
