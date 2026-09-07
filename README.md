@@ -1,12 +1,12 @@
-# Howdy Next APT repository
+# Howdy Next Debian package
 
-Unofficial personal Debian packages of [Howdy Next](https://codeberg.org/nathawat/howdy-next) for **amd64**. GitHub Actions builds upstream Codeberg releases and publishes a GPG-signed APT repo on GitHub Pages.
+Unofficial personal Debian packages of [Howdy Next](https://codeberg.org/nathawat/howdy-next) for **amd64**. GitHub Actions builds upstream Codeberg releases and uploads the `.deb` for the combined APT repo at [jochemkuipers.github.io/apt](https://jochemkuipers.github.io/apt).
 
 This is not affiliated with upstream. Do not mix this package with a source install under `/usr` or `/usr/local`.
 
 ## Supported systems
 
-One suite (`stable`) is built on **Debian trixie** and is intended for:
+Built on **Debian trixie** and intended for:
 
 - Debian 13 (trixie)
 - Debian sid/unstable
@@ -17,15 +17,13 @@ OpenCV 5, yyjson 0.12, and inih 61 are vendored because Debian trixie still ship
 ## Install
 
 ```sh
-curl -fsSL https://jochemkuipers.github.io/howdy-next-apt/howdy-next.sources \
-  | sudo tee /etc/apt/sources.list.d/howdy-next.sources
+curl -fsSL https://jochemkuipers.github.io/apt/jochem.sources \
+  | sudo tee /etc/apt/sources.list.d/jochem.sources
 sudo apt update
 sudo apt install howdy-next
 ```
 
-The `.sources` file embeds the repository signing key (`Signed-By`). Fingerprint:
-
-`68B1 888D D30B BD43 3AE4 1E66 9389 229D 6DB5 F402`
+Remove any old `howdy-next.sources` that pointed at `jochemkuipers.github.io/howdy-next-apt`.
 
 ## After install
 
@@ -63,7 +61,7 @@ sudo apt update
 sudo apt install --only-upgrade howdy-next
 ```
 
-CI rebuilds weekly from the latest Codeberg release, and on pushes to this packaging repo. You can also run the **Publish APT repository** workflow and optionally pin an upstream tag.
+CI rebuilds weekly from the latest Codeberg release, and on pushes to this packaging repo. You can also run the **Build and release** workflow and optionally pin an upstream tag.
 
 ## Layout
 
@@ -74,8 +72,7 @@ CI rebuilds weekly from the latest Codeberg release, and on pushes to this packa
 | `scripts/build-yyjson.sh` | Static yyjson 0.12 prefix |
 | `scripts/build-inih.sh` | Shared inih/INIReader 61 prefix |
 | `scripts/ci-build.sh` | Debian trixie package build |
-| `scripts/publish-apt.sh` | reprepro + InRelease + Pages tree |
-| `.github/workflows/publish.yml` | Build, sign, and deploy |
+| `.github/workflows/publish.yml` | Build and upload a GitHub Release |
 
 ## License
 

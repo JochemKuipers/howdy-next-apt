@@ -1,4 +1,4 @@
-name: Publish APT repository
+name: Build and release
 
 on:
   workflow_dispatch:
@@ -13,13 +13,11 @@ on:
     branches: [main]
 
 concurrency:
-  group: apt-publish
+  group: package
   cancel-in-progress: false
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
   package:
@@ -79,52 +77,41 @@ jobs:
             out/version.txt
           if-no-files-found: error
 
-  publish:
-    needs: package
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Download debs
-        uses: actions/download-artifact@v8
-        with:
-          name: debs
-          path: out
-
-      - name: Install reprepro
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends reprepro gnupg
-
-      - name: Build signed APT repository
+      - name: Check existing release
+        id: release
         env:
-          APT_SIGNING_KEY: ${{ secrets.APT_SIGNING_KEY }}
-          APT_SIGNING_KEY_PASSPHRASE: ${{ secrets.APT_SIGNING_KEY_PASSPHRASE }}
-          APT_REPO_URI: https://jochemkuipers.github.io/howdy-next-apt
-        run: bash scripts/publish-apt.sh
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v${{ steps.meta.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
+      - name: Create GitHub Release
+        if: steps.release.outputs.exists != 'true'
+        uses: softprops/action-gh-release@v2
         with:
-          path: pages
+          tag_name: v${{ steps.meta.outputs.version }}
+          name: howdy-next ${{ steps.meta.outputs.version }}
+          body: |
+            Unofficial Debian package of [howdy-next ${{ steps.meta.outputs.tag }}](https://codeberg.org/nathawat/howdy-next).
 
-      - name: Deploy GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+            Install from the combined APT repo: https://jochemkuipers.github.io/apt
+          files: |
+            out/howdy-next_*.deb
+          fail_on_unmatched_files: true
+          generate_release_notes: false
 
       - name: Summary
         run: |
           {
-            echo "## Howdy Next ${{ needs.package.outputs.tag }}"
+            echo "## Howdy Next ${{ steps.meta.outputs.tag }}"
             echo
-            echo "Install from \`https://jochemkuipers.github.io/howdy-next-apt\`"
+            echo "Install from \`https://jochemkuipers.github.io/apt\`"
             echo
             echo '```sh'
-            echo 'curl -fsSL https://jochemkuipers.github.io/howdy-next-apt/howdy-next.sources | sudo tee /etc/apt/sources.list.d/howdy-next.sources'
+            echo 'curl -fsSL https://jochemkuipers.github.io/apt/jochem.sources | sudo tee /etc/apt/sources.list.d/jochem.sources'
             echo 'sudo apt update'
             echo 'sudo apt install howdy-next'
             echo '```'
