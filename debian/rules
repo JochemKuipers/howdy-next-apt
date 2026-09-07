@@ -37,6 +37,8 @@ override_dh_auto_install:
 	dh_auto_install
 	mkdir -p debian/howdy-next/usr/lib/howdy-next
 	find $(HOWDY_DEPS_PREFIX)/lib -maxdepth 1 -name 'lib*.so*' -exec cp -a {} debian/howdy-next/usr/lib/howdy-next/ \;
+	install -D -m 0644 debian/polkit-agent-helper.howdy-next.conf \
+		debian/howdy-next/usr/lib/systemd/system/polkit-agent-helper@.service.d/howdy-next.conf
 
 override_dh_makeshlibs:
 	# Vendored OpenCV and inih stay private to this package.

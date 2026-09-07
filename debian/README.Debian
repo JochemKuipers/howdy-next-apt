@@ -25,13 +25,21 @@ PAM
 Only add pam_howdy.so after "howdy test" works. See pam_howdy(8) and
 https://codeberg.org/nathawat/howdy-next/wiki/PAM-Integration
 
-Typical common-auth line (do not lock yourself out; keep a
-password fallback):
+Typical common-auth line, above pam_unix (do not lock yourself
+out; keep a password fallback). This also covers sudo and
+polkit-1; do not duplicate it in those files:
 
   auth  sufficient  pam_howdy.so
 
-On sudo-rs (PikaOS), omit workaround=native. That flag is for
-classic sudo conversation handling.
+Omit workaround=native and workaround=native-input. Those flags
+break sudo-rs and KDE polkit.
+
+polkit 127 sandboxes polkit-agent-helper@.service, which hides
+/dev/video* and /dev/uinput. Helper stderr also inherits the
+protocol socket, so OpenCV warnings make KDE cancel the dialog.
+This package installs a systemd drop-in that opens those devices
+and sets StandardError=journal. See
+https://codeberg.org/nathawat/howdy-next/wiki/Polkit-127-compatibility
 
 The setuid helper is /usr/lib/howdy/howdy-auth-helper. PAM compare
 is /usr/lib/howdy/howdy-compare. sudo howdy test does not exercise

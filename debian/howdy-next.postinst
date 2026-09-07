@@ -16,6 +16,10 @@ configure)
 		chown root:root /etc/howdy/config.ini
 		chmod 0640 /etc/howdy/config.ini
 	fi
+
+	if [ -d /run/systemd/system ]; then
+		systemctl daemon-reload >/dev/null 2>&1 || true
+	fi
 	;;
 esac
 

@@ -42,15 +42,17 @@ model. `download-models` fetches the FP32 zoo file. After upgrading from
 3.4.0-4 or earlier, download models again and re-enroll; the embeddings
 are not interchangeable.
 
-When `howdy test` is reliable, add `pam_howdy.so` to the PAM stack you want (Debian: `/etc/pam.d/common-auth`). See [`pam_howdy(8)`](https://codeberg.org/nathawat/howdy-next/wiki/PAM-Integration) and keep a password fallback.
-
-Typical line:
+When `howdy test` is reliable, add this **above** the `pam_unix` line in `/etc/pam.d/common-auth`:
 
 ```
 auth  sufficient  pam_howdy.so
 ```
 
-On PikaOS, `sudo` is often `sudo-rs`. Skip `workaround=native` there; that option is for classic sudo/TTY prompting and can print `Password:` while recognition is still running. Keep a recovery session open before editing PAM.
+That covers sudo, polkit, SDDM, and login with the same flags. Do not also add it to `/etc/pam.d/sudo` or `/etc/pam.d/polkit-1`, or Howdy runs twice and the camera is exclusive. Skip `workaround=native` and `workaround=native-input` (sudo-rs and KDE polkit both break with those). Keep a password fallback and a recovery session. See [`pam_howdy(8)`](https://codeberg.org/nathawat/howdy-next/wiki/PAM-Integration).
+
+Do not test polkit with `sudo pkexec`; that authenticates sudo first. Use `pkexec /usr/bin/true`.
+
+On polkit 127 the helper hides the camera and inherits stderr onto its protocol socket. This package ships a systemd drop-in that opens the camera/`/dev/uinput` and sets `StandardError=journal`. See [Polkit 127 compatibility](https://codeberg.org/nathawat/howdy-next/wiki/Polkit-127-compatibility).
 
 Lock screens need the setuid helper at `/usr/lib/howdy/howdy-auth-helper` (`4755 root:root`). `sudo howdy test` does not use that helper, so a working CLI does not prove PAM is configured. `/etc/howdy` is `0750 root:root`; `Permission denied` as a normal user is expected.
 
