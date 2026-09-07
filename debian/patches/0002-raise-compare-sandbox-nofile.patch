@@ -1,6 +1,6 @@
 --- a/howdy/src/compare/sandbox.cpp
 +++ b/howdy/src/compare/sandbox.cpp
-@@ -17,15 +17,16 @@
+@@ -17,14 +17,15 @@
  	using howdy::native::compare_sandbox_internal::CompareSandboxDependencies;
  	using howdy::native::compare_sandbox_internal::RlimitResource;
  
@@ -20,6 +20,6 @@
 +	// OpenCV 5's new graph engine plus FP32 SFace exceeds the upstream 2.5 GiB
 +	// RLIMIT_AS (FaceRecognizerSF::create throws std::bad_alloc).
 +	constexpr rlim_t kMinimumAddressSpace = static_cast<rlim_t>(4ULL * 1024ULL * 1024ULL * 1024ULL);
- 	constexpr rlim_t kCpuSoftMargin = 5;
- 	constexpr rlim_t kCpuHardMargin = 10;
- 	constexpr rlim_t kCpuSoftFloor = 15;
+ 	constexpr rlim_t kCpuSoftMargin       = 5;
+ 	constexpr rlim_t kCpuHardMargin       = 10;
+ 	constexpr rlim_t kCpuSoftFloor        = 15;
