@@ -12,8 +12,12 @@ After install
 2. Run: sudo howdy config
    Set [video] device_path to that camera.
 3. Run: sudo howdy download-models
+   (uses FP32 SFace; INT8 fails under OpenCV 5's graph engine)
 4. Run: sudo howdy add
 5. Run: sudo howdy test
+
+After upgrading from 3.4.0-4 or earlier, download models again and
+re-enroll faces. INT8 and FP32 embeddings are not interchangeable.
 
 PAM
 ---

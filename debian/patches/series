@@ -1,2 +1,3 @@
 0001-disable-opencl-in-compare.patch
 0002-raise-compare-sandbox-nofile.patch
+0003-use-fp32-sface-model.patch

@@ -37,6 +37,11 @@ Howdy is weaker than a password. Similar faces or photos may fool it. Never use 
 4. `sudo howdy add`
 5. `sudo howdy test`
 
+This package ships OpenCV 5, which cannot load the upstream INT8 SFace
+model. `download-models` fetches the FP32 zoo file. After upgrading from
+3.4.0-4 or earlier, download models again and re-enroll; the embeddings
+are not interchangeable.
+
 When `howdy test` is reliable, add `pam_howdy.so` to the PAM stack you want (Debian: `/etc/pam.d/common-auth`). See [`pam_howdy(8)`](https://codeberg.org/nathawat/howdy-next/wiki/PAM-Integration) and keep a password fallback.
 
 Typical line:
