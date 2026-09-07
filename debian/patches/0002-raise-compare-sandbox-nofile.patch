@@ -1,0 +1,17 @@
+--- a/howdy/src/compare/sandbox.cpp
++++ b/howdy/src/compare/sandbox.cpp
+@@ -17,10 +17,10 @@
+ 	using howdy::native::compare_sandbox_internal::CompareSandboxDependencies;
+ 	using howdy::native::compare_sandbox_internal::RlimitResource;
+ 
+-	constexpr rlim_t kPreferredOpenFiles = 32;
+-	// Measured peak is five descriptors; 16 leaves room beyond stdio, camera, config/model files,
+-	// and OpenCV's internal descriptors.
+-	constexpr rlim_t kMinimumOpenFiles = 16;
++	constexpr rlim_t kPreferredOpenFiles = 256;
++	// OpenCV 5's new DNN engine opens many descriptors while loading YuNet+SFace.
++	// The upstream 32/16 policy is too tight for the vendored OpenCV 5.0.0 build.
++	constexpr rlim_t kMinimumOpenFiles = 64;
+ 	constexpr rlim_t kPreferredAddressSpace =
+ 	    static_cast<rlim_t>(5ULL * 1024ULL * 1024ULL * 1024ULL / 2ULL);
+ 	// Measured VmPeak is 1.672 GiB. Keep a conservative 2 GiB policy floor.

@@ -1,3 +1,10 @@
+howdy-next (3.4.0-4) stable; urgency=medium
+
+  * Disable OpenCL inside howdy-compare and raise the PAM sandbox file
+    descriptor limit so SFace can load under sudo.
+
+ -- Jochem Kuipers <JochemKuipers+howdy-next-apt@users.noreply.github.com>  Mon, 07 Sep 2026 09:30:00 +0000
+
 howdy-next (3.4.0-3) stable; urgency=medium
 
   * Keep howdy-compare as an ELF binary. A shell wrapper caused dash/bash

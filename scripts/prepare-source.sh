@@ -43,6 +43,14 @@ fi
 rm -rf "${WORK}/debian"
 cp -a "${ROOT}/debian" "${WORK}/debian"
 
+if [[ -f "${WORK}/debian/patches/series" ]]; then
+	while IFS= read -r patch || [[ -n "${patch}" ]]; do
+		[[ -z "${patch}" || "${patch}" == \#* ]] && continue
+		echo "Applying ${patch}"
+		patch -d "${WORK}" -p1 < "${WORK}/debian/patches/${patch}"
+	done < "${WORK}/debian/patches/series"
+fi
+
 cat > "${WORK}/debian/build-env.mk" <<EOF
 HOWDY_DEPS_PREFIX := ${PREFIX}
 HOWDY_GIT_COMMIT := ${COMMIT}
