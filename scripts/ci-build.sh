@@ -8,8 +8,8 @@ OUT="${HOWDY_OUT_DIR:-${ROOT}/out}"
 
 apt-get update
 apt-get install -y --no-install-recommends \
-	ca-certificates curl git cmake ninja-build g++ pkgconf gettext \
-	debhelper dpkg-dev fakeroot jq xz-utils \
+	build-essential ca-certificates curl git cmake ninja-build \
+	pkgconf gettext debhelper dpkg-dev fakeroot jq xz-utils \
 	libpam0g-dev libevdev-dev libinih-dev libacl1-dev \
 	libcurl4-openssl-dev libssl-dev libgtk-3-dev \
 	libavcodec-dev libavformat-dev libswscale-dev libavutil-dev \
