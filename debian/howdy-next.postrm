@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+# Enrolled face models in /etc/howdy/models are user data and are left
+# in place on remove and purge.
+
+#DEBHELPER#
+
+exit 0

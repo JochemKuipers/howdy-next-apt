@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PREFIX="${HOWDY_DEPS_PREFIX:-/opt/howdy-next-deps}"
+WORK="${HOWDY_SRC_DIR:-${ROOT}/src/howdy-next}"
+TAG="${UPSTREAM_TAG:-}"
+
+if [[ -z "${TAG}" ]]; then
+	echo "UPSTREAM_TAG is required" >&2
+	exit 1
+fi
+
+VERSION="${TAG#v}"
+COMMIT="${HOWDY_GIT_COMMIT:-}"
+mkdir -p "$(dirname "${WORK}")"
+rm -rf "${WORK}" "${ROOT}/src/howdy-next.tar.gz"
+
+curl -fsSL -o "${ROOT}/src/howdy-next.tar.gz" \
+	"https://codeberg.org/nathawat/howdy-next/archive/${TAG}.tar.gz"
+mkdir -p "${ROOT}/src/extract"
+rm -rf "${ROOT}/src/extract"
+mkdir -p "${ROOT}/src/extract"
+tar -xzf "${ROOT}/src/howdy-next.tar.gz" -C "${ROOT}/src/extract"
+SRC_DIR="$(find "${ROOT}/src/extract" -mindepth 1 -maxdepth 1 -type d | head -n1)"
+if [[ -z "${SRC_DIR}" ]]; then
+	echo "Failed to extract howdy-next ${TAG}" >&2
+	exit 1
+fi
+mv "${SRC_DIR}" "${WORK}"
+rm -rf "${ROOT}/src/extract"
+
+if [[ -z "${COMMIT}" ]] && command -v git >/dev/null; then
+	COMMIT="$(git ls-remote https://codeberg.org/nathawat/howdy-next.git "refs/tags/${TAG}^{}" | awk '{print $1}')"
+	if [[ -z "${COMMIT}" ]]; then
+		COMMIT="$(git ls-remote https://codeberg.org/nathawat/howdy-next.git "refs/tags/${TAG}" | awk '{print $1}')"
+	fi
+fi
+
+rm -rf "${WORK}/debian"
+cp -a "${ROOT}/debian" "${WORK}/debian"
+
+cat > "${WORK}/debian/build-env.mk" <<EOF
+HOWDY_DEPS_PREFIX := ${PREFIX}
+HOWDY_GIT_COMMIT := ${COMMIT}
+EOF
+
+DATE="$(date -R)"
+cat > "${WORK}/debian/changelog" <<EOF
+howdy-next (${VERSION}-1) stable; urgency=medium
+
+  * Package Howdy Next ${VERSION} from upstream tag ${TAG}.
+
+ -- Jochem Kuipers <JochemKuipers+howdy-next-apt@users.noreply.github.com>  ${DATE}
+EOF
+
+echo "Prepared ${WORK} for howdy-next ${VERSION} (commit ${COMMIT:-unknown})"

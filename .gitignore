@@ -1,0 +1,14 @@
+/out/
+/pages/
+/deps-prefix/
+/.ccache/
+/src/
+*.deb
+*.ddeb
+*.udeb
+*.buildinfo
+*.changes
+*.dsc
+/*.tar.gz
+/*.tar.xz
+*~

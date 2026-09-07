@@ -1,0 +1,11 @@
+Building
+========
+
+OpenCV 5 and yyjson 0.12 are not taken from Debian. Build them first:
+
+  export HOWDY_DEPS_PREFIX=/opt/howdy-next-deps
+  ./scripts/build-opencv5.sh
+  ./scripts/build-yyjson.sh
+
+Then overlay debian/ onto an upstream howdy-next tree and run
+dpkg-buildpackage. CI does this via scripts/ci-build.sh.

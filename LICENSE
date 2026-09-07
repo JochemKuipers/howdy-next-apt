@@ -1,0 +1,8 @@
+Howdy Next APT packaging is licensed under the GNU General Public License
+version 3 or later. See <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+Howdy Next itself is GPL-3.0-or-later:
+https://codeberg.org/nathawat/howdy-next
+
+Vendored build-time dependencies keep their own licenses (OpenCV Apache-2.0,
+yyjson MIT).

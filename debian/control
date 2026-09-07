@@ -1,0 +1,40 @@
+Source: howdy-next
+Section: admin
+Priority: optional
+Maintainer: Jochem Kuipers <JochemKuipers+howdy-next-apt@users.noreply.github.com>
+Rules-Requires-Root: binary-targets
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake (>= 3.31),
+ ninja-build,
+ pkgconf,
+ gettext,
+ g++,
+ libpam0g-dev,
+ libevdev-dev,
+ libinih-dev (>= 59),
+ libacl1-dev,
+ libcurl4-openssl-dev,
+ libssl-dev,
+ libgtk-3-dev
+Standards-Version: 4.7.2
+Homepage: https://codeberg.org/nathawat/howdy-next
+Vcs-Git: https://github.com/JochemKuipers/howdy-next-apt.git
+Vcs-Browser: https://github.com/JochemKuipers/howdy-next-apt
+
+Package: howdy-next
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: howdy
+Conflicts: howdy
+Replaces: howdy
+Description: C++ facial-recognition authentication for Linux
+ Howdy Next is a C++ rewrite of Howdy. It provides a PAM module and
+ CLI for Windows Hello-style facial authentication on Linux.
+ .
+ This unofficial package vendors OpenCV 5 (not yet in Debian main) and
+ yyjson 0.12. Face models are not included; run
+ "sudo howdy download-models" after install.
+ .
+ Howdy is weaker than a password. Never use it as the sole
+ authentication method. This package does not enable PAM automatically.

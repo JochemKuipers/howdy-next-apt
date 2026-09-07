@@ -1,0 +1,34 @@
+Howdy Next for Debian
+=====================
+
+This is an unofficial personal package. It does not enable PAM on
+install. Test recognition before changing authentication.
+
+After install
+-------------
+
+1. Identify a stable camera path under /dev/v4l/by-id/ or
+   /dev/v4l/by-path/.
+2. Run: sudo howdy config
+   Set [video] device_path to that camera.
+3. Run: sudo howdy download-models
+4. Run: sudo howdy add
+5. Run: sudo howdy test
+
+PAM
+---
+
+Only add pam_howdy.so after "howdy test" works. See pam_howdy(8) and
+https://codeberg.org/nathawat/howdy-next/wiki/PAM-Integration
+
+Typical sudo/system-auth line (do not lock yourself out; keep a
+password fallback):
+
+  auth  sufficient  pam_howdy.so  workaround=native
+
+Vendored OpenCV
+---------------
+
+Debian does not yet ship OpenCV 5 in main. This package includes a
+private libopencv_world under /usr/lib/howdy-next so it does not
+conflict with Debian's OpenCV 4.

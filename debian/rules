@@ -1,0 +1,66 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CFLAGS_MAINT_APPEND = -Wall
+export DEB_CXXFLAGS_MAINT_APPEND = -Wall
+
+-include debian/build-env.mk
+
+HOWDY_DEPS_PREFIX ?= /opt/howdy-next-deps
+HOWDY_GIT_COMMIT ?=
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+export PKG_CONFIG_PATH := $(HOWDY_DEPS_PREFIX)/lib/pkgconfig$(if $(PKG_CONFIG_PATH),:$(PKG_CONFIG_PATH))
+export CMAKE_PREFIX_PATH := $(HOWDY_DEPS_PREFIX)
+
+%:
+	dh $@ --buildsystem=cmake+ninja --builddirectory=build
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_PREFIX_PATH=$(HOWDY_DEPS_PREFIX) \
+		-DCMAKE_INSTALL_RPATH=/usr/lib/howdy-next \
+		-DCMAKE_BUILD_RPATH=$(HOWDY_DEPS_PREFIX)/lib \
+		-DBUILD_TESTING=OFF \
+		-DHOWDY_USE_CCACHE=ON \
+		-DHOWDY_PAM_DIR=/usr/lib/$(DEB_HOST_MULTIARCH)/security \
+		-DHOWDY_LICENSES_INSTALL_DIR=/usr/share/doc/howdy-next \
+		-DHOWDY_GIT_COMMIT=$(HOWDY_GIT_COMMIT)
+
+override_dh_auto_test:
+	@echo "Skipping tests (BUILD_TESTING=OFF)"
+
+override_dh_auto_install:
+	dh_auto_install
+	mkdir -p debian/howdy-next/usr/lib/howdy-next
+	cp -a $(HOWDY_DEPS_PREFIX)/lib/libopencv_world.so* debian/howdy-next/usr/lib/howdy-next/
+
+override_dh_makeshlibs:
+	# Vendored OpenCV stays private to this package.
+
+override_dh_shlibdeps:
+	set -e; \
+	lib=$$(ls debian/howdy-next/usr/lib/howdy-next/libopencv_world.so.*.* 2>/dev/null | head -n1); \
+	if [ -z "$$lib" ]; then \
+		lib=$$(ls debian/howdy-next/usr/lib/howdy-next/libopencv_world.so.* | head -n1); \
+	fi; \
+	soname=$$(objdump -p "$$lib" | awk '/SONAME/ {print $$2}'); \
+	name=$${soname%%.so.*}; \
+	ver=$${soname#*.so.}; \
+	echo "$$name $$ver howdy-next" > debian/shlibs.local; \
+	dh_shlibdeps -ldebian/howdy-next/usr/lib/howdy-next
+
+override_dh_fixperms:
+	dh_fixperms
+	chmod 4755 debian/howdy-next/usr/libexec/howdy/howdy-auth-helper
+	if [ -d debian/howdy-next/etc/howdy ]; then \
+		chmod 0750 debian/howdy-next/etc/howdy; \
+	fi
+	if [ -d debian/howdy-next/etc/howdy/models ]; then \
+		chmod 0750 debian/howdy-next/etc/howdy/models; \
+	fi
+	if [ -f debian/howdy-next/etc/howdy/config.ini ]; then \
+		chmod 0640 debian/howdy-next/etc/howdy/config.ini; \
+	fi

@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+configure)
+	if [ -x /usr/libexec/howdy/howdy-auth-helper ]; then
+		chown root:root /usr/libexec/howdy/howdy-auth-helper
+		chmod 4755 /usr/libexec/howdy/howdy-auth-helper
+	fi
+
+	mkdir -p /etc/howdy/models
+	chown root:root /etc/howdy /etc/howdy/models
+	chmod 0750 /etc/howdy /etc/howdy/models
+
+	if [ -f /etc/howdy/config.ini ]; then
+		chown root:root /etc/howdy/config.ini
+		chmod 0640 /etc/howdy/config.ini
+	fi
+	;;
+esac
+
+#DEBHELPER#
+
+exit 0

@@ -1,0 +1,131 @@
+name: Publish APT repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Upstream howdy-next tag (empty = latest Codeberg release)
+        required: false
+        default: ""
+  schedule:
+    - cron: "17 4 * * 1"
+  push:
+    branches: [main]
+
+concurrency:
+  group: apt-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache OpenCV, yyjson, and ccache
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps-prefix
+            .ccache
+          key: deps-trixie-${{ hashFiles('deps.versions', 'scripts/build-opencv5.sh', 'scripts/build-yyjson.sh') }}
+          restore-keys: |
+            deps-trixie-
+
+      - name: Build Debian package
+        env:
+          UPSTREAM_TAG: ${{ github.event.inputs.tag }}
+        run: |
+          mkdir -p deps-prefix .ccache out src
+          docker run --rm \
+            -e DEBIAN_FRONTEND=noninteractive \
+            -e UPSTREAM_TAG \
+            -e HOWDY_DEPS_PREFIX=/opt/howdy-next-deps \
+            -e CCACHE_DIR=/cache/ccache \
+            -e CMAKE_BUILD_PARALLEL_LEVEL=4 \
+            -v "$PWD:/work" \
+            -v "$PWD/deps-prefix:/opt/howdy-next-deps" \
+            -v "$PWD/.ccache:/cache/ccache" \
+            -w /work \
+            debian:trixie \
+            bash /work/scripts/ci-build.sh
+          sudo chown -R "$(id -u):$(id -g)" out deps-prefix .ccache src || true
+
+      - name: Record version
+        id: meta
+        run: |
+          echo "tag=$(cat out/upstream-tag.txt)" >> "$GITHUB_OUTPUT"
+          echo "version=$(cat out/version.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload debs
+        uses: actions/upload-artifact@v4
+        with:
+          name: debs
+          path: |
+            out/*.deb
+            out/*.changes
+            out/*.buildinfo
+            out/upstream-tag.txt
+            out/version.txt
+          if-no-files-found: error
+
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download debs
+        uses: actions/download-artifact@v4
+        with:
+          name: debs
+          path: out
+
+      - name: Install reprepro
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends reprepro gnupg
+
+      - name: Build signed APT repository
+        env:
+          APT_SIGNING_KEY: ${{ secrets.APT_SIGNING_KEY }}
+          APT_SIGNING_KEY_PASSPHRASE: ${{ secrets.APT_SIGNING_KEY_PASSPHRASE }}
+          APT_REPO_URI: https://jochemkuipers.github.io/howdy-next-apt
+        run: bash scripts/publish-apt.sh
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Summary
+        run: |
+          {
+            echo "## Howdy Next ${{ needs.package.outputs.tag }}"
+            echo
+            echo "Install from \`https://jochemkuipers.github.io/howdy-next-apt\`"
+            echo
+            echo '```sh'
+            echo 'curl -fsSL https://jochemkuipers.github.io/howdy-next-apt/howdy-next.sources | sudo tee /etc/apt/sources.list.d/howdy-next.sources'
+            echo 'sudo apt update'
+            echo 'sudo apt install howdy-next'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
