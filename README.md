@@ -1,6 +1,6 @@
 # Howdy Next Debian package
 
-Unofficial personal Debian packages of [Howdy Next](https://codeberg.org/nathawat/howdy-next) for **amd64**. GitHub Actions builds upstream Codeberg releases and uploads the `.deb` for the combined APT repo at [jochemkuipers.github.io/apt](https://jochemkuipers.github.io/apt).
+Unofficial personal Debian packages of [Howdy Next](https://codeberg.org/nathawat/howdy-next) for **amd64**. GitHub Actions builds upstream Codeberg releases and uploads the `.deb` for the combined APT repo at [jochemkuipers.github.io/apt-repo](https://jochemkuipers.github.io/apt-repo).
 
 This is not affiliated with upstream. Do not mix this package with a source install under `/usr` or `/usr/local`.
 
@@ -17,7 +17,7 @@ OpenCV 5, yyjson 0.12, and inih 61 are vendored because Debian trixie still ship
 ## Install
 
 ```sh
-curl -fsSL https://jochemkuipers.github.io/apt/jochem.sources \
+curl -fsSL https://jochemkuipers.github.io/apt-repo/jochem.sources \
   | sudo tee /etc/apt/sources.list.d/jochem.sources
 sudo apt update
 sudo apt install howdy-next

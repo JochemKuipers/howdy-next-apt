@@ -97,7 +97,7 @@ jobs:
           body: |
             Unofficial Debian package of [howdy-next ${{ steps.meta.outputs.tag }}](https://codeberg.org/nathawat/howdy-next).
 
-            Install from the combined APT repo: https://jochemkuipers.github.io/apt
+            Install from the combined APT repo: https://jochemkuipers.github.io/apt-repo
           files: |
             out/howdy-next_*.deb
           fail_on_unmatched_files: true
@@ -108,10 +108,10 @@ jobs:
           {
             echo "## Howdy Next ${{ steps.meta.outputs.tag }}"
             echo
-            echo "Install from \`https://jochemkuipers.github.io/apt\`"
+            echo "Install from \`https://jochemkuipers.github.io/apt-repo\`"
             echo
             echo '```sh'
-            echo 'curl -fsSL https://jochemkuipers.github.io/apt/jochem.sources | sudo tee /etc/apt/sources.list.d/jochem.sources'
+            echo 'curl -fsSL https://jochemkuipers.github.io/apt-repo/jochem.sources | sudo tee /etc/apt/sources.list.d/jochem.sources'
             echo 'sudo apt update'
             echo 'sudo apt install howdy-next'
             echo '```'
