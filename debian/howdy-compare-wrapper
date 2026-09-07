@@ -1,7 +1,0 @@
-#!/bin/sh
-# howdy-compare runs inside a tight PAM sandbox (NOFILE=32, no_new_privs).
-# OpenCL device probing then makes FaceRecognizerSF::create return empty:
-# "Failed to initialize face recognizer". Force CPU/DNN only.
-export OPENCV_OPENCL_RUNTIME=disabled
-export OPENCV_OPENCL_DEVICE=disabled
-exec /usr/lib/howdy/howdy-compare.real "$@"

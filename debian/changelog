@@ -1,3 +1,10 @@
+howdy-next (3.4.0-3) stable; urgency=medium
+
+  * Keep howdy-compare as an ELF binary. A shell wrapper caused dash/bash
+    to drop sudo's root euid, so PAM could not read /etc/howdy/config.ini.
+
+ -- Jochem Kuipers <JochemKuipers+howdy-next-apt@users.noreply.github.com>  Mon, 07 Sep 2026 09:25:00 +0000
+
 howdy-next (3.4.0-2) stable; urgency=medium
 
   * Disable OpenCV OpenCL so PAM compare can load SFace in the sandbox.
