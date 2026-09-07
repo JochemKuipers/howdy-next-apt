@@ -55,7 +55,7 @@ CI rebuilds weekly from the latest Codeberg release, and on pushes to this packa
 | Path | Role |
 | --- | --- |
 | `debian/` | Debian packaging overlaid onto the upstream tarball |
-| `scripts/build-opencv5.sh` | Minimal OpenCV 5 `opencv_world` prefix |
+| `scripts/build-opencv5.sh` | Minimal OpenCV 5 shared libraries (core, dnn, videoio, …) |
 | `scripts/build-yyjson.sh` | Static yyjson 0.12 prefix |
 | `scripts/ci-build.sh` | Debian trixie package build |
 | `scripts/publish-apt.sh` | reprepro + InRelease + Pages tree |

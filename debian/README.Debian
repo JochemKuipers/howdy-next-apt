@@ -29,6 +29,5 @@ password fallback):
 Vendored OpenCV
 ---------------
 
-Debian does not yet ship OpenCV 5 in main. This package includes a
-private libopencv_world under /usr/lib/howdy-next so it does not
-conflict with Debian's OpenCV 4.
+Debian does not yet ship OpenCV 5 in main. This package includes private OpenCV 5 libraries under
+/usr/lib/howdy-next so it does not conflict with Debian's OpenCV 4.

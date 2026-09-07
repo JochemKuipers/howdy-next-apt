@@ -35,21 +35,23 @@ override_dh_auto_test:
 override_dh_auto_install:
 	dh_auto_install
 	mkdir -p debian/howdy-next/usr/lib/howdy-next
-	cp -a $(HOWDY_DEPS_PREFIX)/lib/libopencv_world.so* debian/howdy-next/usr/lib/howdy-next/
+	find $(HOWDY_DEPS_PREFIX)/lib -maxdepth 1 -name 'libopencv_*.so*' -exec cp -a {} debian/howdy-next/usr/lib/howdy-next/ \;
 
 override_dh_makeshlibs:
 	# Vendored OpenCV stays private to this package.
 
 override_dh_shlibdeps:
 	set -e; \
-	lib=$$(ls debian/howdy-next/usr/lib/howdy-next/libopencv_world.so.*.* 2>/dev/null | head -n1); \
-	if [ -z "$$lib" ]; then \
-		lib=$$(ls debian/howdy-next/usr/lib/howdy-next/libopencv_world.so.* | head -n1); \
-	fi; \
-	soname=$$(objdump -p "$$lib" | awk '/SONAME/ {print $$2}'); \
-	name=$${soname%%.so.*}; \
-	ver=$${soname#*.so.}; \
-	echo "$$name $$ver howdy-next" > debian/shlibs.local; \
+	: > debian/shlibs.local; \
+	for lib in debian/howdy-next/usr/lib/howdy-next/libopencv_*.so.*; do \
+		[ -e "$$lib" ] || continue; \
+		[ -L "$$lib" ] && continue; \
+		soname=$$(objdump -p "$$lib" | awk '/SONAME/ {print $$2}'); \
+		[ -n "$$soname" ] || continue; \
+		name=$${soname%%.so.*}; \
+		ver=$${soname#*.so.}; \
+		echo "$$name $$ver howdy-next" >> debian/shlibs.local; \
+	done; \
 	dh_shlibdeps -ldebian/howdy-next/usr/lib/howdy-next
 
 override_dh_fixperms:

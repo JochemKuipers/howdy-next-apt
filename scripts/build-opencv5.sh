@@ -26,13 +26,17 @@ fi
 rm -rf "${SRC_ROOT}/opencv-${OPENCV_VERSION}"
 tar -xzf "${archive}" -C "${SRC_ROOT}"
 
+# opencv_world in 5.0.0 does not link vendored DNN MLAS objects, so ship
+# split shared libraries instead (libopencv_dnn.so includes MLAS).
 cmake -S "${SRC_ROOT}/opencv-${OPENCV_VERSION}" -B "${SRC_ROOT}/opencv-build" -G Ninja \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 	-DCMAKE_INSTALL_LIBDIR=lib \
+	-DCMAKE_INSTALL_RPATH=/usr/lib/howdy-next \
+	-DCMAKE_BUILD_RPATH="${PREFIX}/lib" \
 	-DCMAKE_CXX_STANDARD=17 \
 	-DBUILD_SHARED_LIBS=ON \
-	-DBUILD_opencv_world=ON \
+	-DBUILD_opencv_world=OFF \
 	-DBUILD_TESTS=OFF \
 	-DBUILD_PERF_TESTS=OFF \
 	-DBUILD_EXAMPLES=OFF \
