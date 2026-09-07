@@ -1,3 +1,10 @@
+howdy-next (3.4.0-2) stable; urgency=medium
+
+  * Disable OpenCV OpenCL so PAM compare can load SFace in the sandbox.
+  * Install helpers under /usr/lib/howdy to match the documented path.
+
+ -- Jochem Kuipers <JochemKuipers+howdy-next-apt@users.noreply.github.com>  Mon, 07 Sep 2026 09:10:00 +0000
+
 howdy-next (3.4.0-1) stable; urgency=medium
 
   * Package Howdy Next 3.4.0 from upstream.

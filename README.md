@@ -37,9 +37,17 @@ Howdy is weaker than a password. Similar faces or photos may fool it. Never use 
 4. `sudo howdy add`
 5. `sudo howdy test`
 
-When `howdy test` is reliable, add `pam_howdy.so` to the PAM service you want. See [`pam_howdy(8)`](https://codeberg.org/nathawat/howdy-next/wiki/PAM-Integration) and keep a password fallback.
+When `howdy test` is reliable, add `pam_howdy.so` to the PAM stack you want (Debian: `/etc/pam.d/common-auth`). See [`pam_howdy(8)`](https://codeberg.org/nathawat/howdy-next/wiki/PAM-Integration) and keep a password fallback.
 
-Lock screens need the setuid helper at `/usr/libexec/howdy/howdy-auth-helper`. The package installs it `4755 root:root`.
+Typical line:
+
+```
+auth  sufficient  pam_howdy.so
+```
+
+On PikaOS, `sudo` is often `sudo-rs`. Skip `workaround=native` there; that option is for classic sudo/TTY prompting and can print `Password:` while recognition is still running. Keep a recovery session open before editing PAM.
+
+Lock screens need the setuid helper at `/usr/lib/howdy/howdy-auth-helper` (`4755 root:root`). `sudo howdy test` does not use that helper, so a working CLI does not prove PAM is configured. `/etc/howdy` is `0750 root:root`; `Permission denied` as a normal user is expected.
 
 ## Updates
 

@@ -1,6 +1,6 @@
 etc/howdy
 etc/howdy/models
 usr/lib/howdy-next
-usr/libexec/howdy
+usr/lib/howdy
 usr/share/howdy/models
 usr/share/doc/howdy-next

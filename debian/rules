@@ -20,6 +20,7 @@ override_dh_auto_configure:
 	dh_auto_configure -- \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBEXECDIR=lib \
 		-DCMAKE_PREFIX_PATH=$(HOWDY_DEPS_PREFIX) \
 		-DCMAKE_INSTALL_RPATH=/usr/lib/howdy-next \
 		-DCMAKE_BUILD_RPATH=$(HOWDY_DEPS_PREFIX)/lib \
@@ -36,6 +37,12 @@ override_dh_auto_install:
 	dh_auto_install
 	mkdir -p debian/howdy-next/usr/lib/howdy-next
 	find $(HOWDY_DEPS_PREFIX)/lib -maxdepth 1 -name 'lib*.so*' -exec cp -a {} debian/howdy-next/usr/lib/howdy-next/ \;
+	if [ -x debian/howdy-next/usr/lib/howdy/howdy-compare ]; then \
+		mv debian/howdy-next/usr/lib/howdy/howdy-compare \
+			debian/howdy-next/usr/lib/howdy/howdy-compare.real; \
+		install -m 0755 debian/howdy-compare-wrapper \
+			debian/howdy-next/usr/lib/howdy/howdy-compare; \
+	fi
 
 override_dh_makeshlibs:
 	# Vendored OpenCV and inih stay private to this package.
@@ -56,7 +63,7 @@ override_dh_shlibdeps:
 
 override_dh_fixperms:
 	dh_fixperms
-	chmod 4755 debian/howdy-next/usr/libexec/howdy/howdy-auth-helper
+	chmod 4755 debian/howdy-next/usr/lib/howdy/howdy-auth-helper
 	if [ -d debian/howdy-next/etc/howdy ]; then \
 		chmod 0750 debian/howdy-next/etc/howdy; \
 	fi

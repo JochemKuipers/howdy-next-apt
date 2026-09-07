@@ -3,9 +3,9 @@ set -e
 
 case "$1" in
 configure)
-	if [ -x /usr/libexec/howdy/howdy-auth-helper ]; then
-		chown root:root /usr/libexec/howdy/howdy-auth-helper
-		chmod 4755 /usr/libexec/howdy/howdy-auth-helper
+	if [ -x /usr/lib/howdy/howdy-auth-helper ]; then
+		chown root:root /usr/lib/howdy/howdy-auth-helper
+		chmod 4755 /usr/lib/howdy/howdy-auth-helper
 	fi
 
 	mkdir -p /etc/howdy/models

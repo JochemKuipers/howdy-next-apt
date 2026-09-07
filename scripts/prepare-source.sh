@@ -2,7 +2,10 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck disable=SC1091
+source "${ROOT}/deps.versions"
 PREFIX="${HOWDY_DEPS_PREFIX:-/opt/howdy-next-deps}"
+DEBIAN_REVISION="${DEBIAN_REVISION:-1}"
 WORK="${HOWDY_SRC_DIR:-${ROOT}/src/howdy-next}"
 TAG="${UPSTREAM_TAG:-}"
 
@@ -47,7 +50,7 @@ EOF
 
 DATE="$(date -R)"
 cat > "${WORK}/debian/changelog" <<EOF
-howdy-next (${VERSION}-1) stable; urgency=medium
+howdy-next (${VERSION}-${DEBIAN_REVISION}) stable; urgency=medium
 
   * Package Howdy Next ${VERSION} from upstream tag ${TAG}.
 

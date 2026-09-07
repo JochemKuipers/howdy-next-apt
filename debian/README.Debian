@@ -21,10 +21,17 @@ PAM
 Only add pam_howdy.so after "howdy test" works. See pam_howdy(8) and
 https://codeberg.org/nathawat/howdy-next/wiki/PAM-Integration
 
-Typical sudo/system-auth line (do not lock yourself out; keep a
+Typical common-auth line (do not lock yourself out; keep a
 password fallback):
 
-  auth  sufficient  pam_howdy.so  workaround=native
+  auth  sufficient  pam_howdy.so
+
+On sudo-rs (PikaOS), omit workaround=native. That flag is for
+classic sudo conversation handling.
+
+The setuid helper is /usr/lib/howdy/howdy-auth-helper. PAM compare
+is /usr/lib/howdy/howdy-compare. sudo howdy test does not exercise
+those paths. /etc/howdy is root-only; that is intentional.
 
 Vendored OpenCV
 ---------------

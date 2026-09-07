@@ -8,10 +8,16 @@ source "${ROOT}/deps.versions"
 PREFIX="${HOWDY_DEPS_PREFIX:-/opt/howdy-next-deps}"
 SRC_ROOT="${HOWDY_DEPS_SRC:-${PREFIX}/src}"
 JOBS="${CMAKE_BUILD_PARALLEL_LEVEL:-$(nproc)}"
+# Bump when CMake flags change so restored CI caches rebuild instead of
+# skipping because opencv5.pc already exists.
+OPENCV_BUILD_ID="${OPENCV_VERSION}-no-opencl-1"
+STAMP="${PREFIX}/.howdy-opencv-build-id"
 
 export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}"
 
-if pkg-config --exists "opencv5 >= ${OPENCV_VERSION}"; then
+if pkg-config --exists "opencv5 >= ${OPENCV_VERSION}" \
+	&& [[ -f "${STAMP}" ]] \
+	&& [[ "$(cat "${STAMP}")" == "${OPENCV_BUILD_ID}" ]]; then
 	echo "OpenCV $(pkg-config --modversion opencv5) already installed in ${PREFIX}"
 	exit 0
 fi
@@ -52,7 +58,7 @@ cmake -S "${SRC_ROOT}/opencv-${OPENCV_VERSION}" -B "${SRC_ROOT}/opencv-build" -G
 	-DWITH_GSTREAMER=OFF \
 	-DWITH_V4L=ON \
 	-DWITH_CUDA=OFF \
-	-DWITH_OPENCL=ON \
+	-DWITH_OPENCL=OFF \
 	-DWITH_1394=OFF \
 	-DWITH_VTK=OFF \
 	-DOPENCV_GENERATE_PKGCONFIG=ON
@@ -67,4 +73,5 @@ if ! pkg-config --exists "opencv5 >= ${OPENCV_VERSION}"; then
 	exit 1
 fi
 
+printf '%s\n' "${OPENCV_BUILD_ID}" > "${STAMP}"
 echo "Installed OpenCV $(pkg-config --modversion opencv5) to ${PREFIX}"

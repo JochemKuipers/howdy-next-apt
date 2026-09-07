@@ -1,6 +1,6 @@
 # Privileged helper is required for lock-screen PAM consumers.
-howdy-next: elevated-privileges 4755 root/root [usr/libexec/howdy/howdy-auth-helper]
-howdy-next: setuid-binary usr/libexec/howdy/howdy-auth-helper 4755 root/root
+howdy-next: elevated-privileges 4755 root/root [usr/lib/howdy/howdy-auth-helper]
+howdy-next: setuid-binary usr/lib/howdy/howdy-auth-helper 4755 root/root
 
 # Private OpenCV 5 is loaded from a package-owned directory.
 howdy-next: binary-or-shlib-defines-rpath * /usr/lib/howdy-next
