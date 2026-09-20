@@ -1,3 +1,3 @@
-0001-disable-opencl-in-compare.patch
-0002-raise-compare-sandbox-nofile.patch
-0003-use-fp32-sface-model.patch
+# Unpatched as of 3.4.1. Upstream now forces OPENCV_FORCE_DNN_ENGINE=2
+# and ships INT8 SFace with OpenCV 5. Restore the sandbox RLIMIT patch
+# if PAM howdy-compare hits EMFILE or std::bad_alloc.

@@ -1,3 +1,11 @@
+howdy-next (3.4.1-1) stable; urgency=medium
+
+  * Package Howdy Next 3.4.1 from upstream, unpatched.
+  * Drop OpenCL, sandbox-limit, and FP32 SFace workarounds; upstream
+    now forces the OpenCV 5 DNN graph engine with INT8 SFace.
+
+ -- Jochem Kuipers <JochemKuipers+howdy-next-apt@users.noreply.github.com>  Sun, 20 Sep 2026 21:59:19 +0200
+
 howdy-next (3.4.0-6) stable; urgency=medium
 
   * Install a polkit-agent-helper drop-in so graphical prompts can
