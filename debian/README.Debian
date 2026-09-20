@@ -12,12 +12,12 @@ After install
 2. Run: sudo howdy config
    Set [video] device_path to that camera.
 3. Run: sudo howdy download-models
+   (uses FP32 SFace; INT8 fails under OpenCV 5.0.0)
 4. Run: sudo howdy add
 5. Run: sudo howdy test
 
-After upgrading to 3.4.1, download models again for the new YuNet
-detector. If you enrolled on 3.4.0-5 or 3.4.0-6 (FP32 SFace),
-clear models and re-enroll; those embeddings do not match INT8.
+After upgrading from unpatched 3.4.1-1, download models if needed
+and re-enroll. INT8 and FP32 embeddings are not interchangeable.
 
 PAM
 ---

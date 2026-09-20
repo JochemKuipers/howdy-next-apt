@@ -35,10 +35,10 @@ Howdy is weaker than a password. Similar faces or photos may fool it. Never use 
 4. `sudo howdy add`
 5. `sudo howdy test`
 
-After upgrading to 3.4.1, run `sudo howdy download-models` for the new
-YuNet detector. If you enrolled on 3.4.0-5 or 3.4.0-6 (the FP32 SFace
-workaround), clear models and re-enroll; those embeddings do not match
-upstream INT8.
+This package still uses FP32 SFace. OpenCV 5.0.0 cannot load upstream
+INT8 (`Failed to initialize face recognizer`). After upgrading from
+unpatched 3.4.1-1, run `sudo howdy download-models` if needed, then
+re-enroll; INT8 and FP32 embeddings are not interchangeable.
 
 When `howdy test` is reliable, add this **above** the `pam_unix` line in `/etc/pam.d/common-auth`:
 

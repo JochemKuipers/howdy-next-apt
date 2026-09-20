@@ -1,3 +1,11 @@
+howdy-next (3.4.1-2) stable; urgency=medium
+
+  * Restore FP32 SFace and PAM sandbox limits. OpenCV 5.0.0 still
+    cannot load upstream INT8 SFace ("Failed to initialize face
+    recognizer").
+
+ -- Jochem Kuipers <JochemKuipers+howdy-next-apt@users.noreply.github.com>  Sun, 20 Sep 2026 22:13:00 +0200
+
 howdy-next (3.4.1-1) stable; urgency=medium
 
   * Package Howdy Next 3.4.1 from upstream, unpatched.
