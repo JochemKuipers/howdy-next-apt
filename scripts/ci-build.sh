@@ -60,7 +60,9 @@ if ! compgen -G "${OUT}/howdy-next_*.deb" >/dev/null; then
 	exit 1
 fi
 
-VERSION="${UPSTREAM_TAG#v}"
+# shellcheck disable=SC1091
+source "${ROOT}/deps.versions"
+VERSION="${UPSTREAM_TAG#v}-${DEBIAN_REVISION}"
 printf '%s\n' "${UPSTREAM_TAG}" > "${OUT}/upstream-tag.txt"
 printf '%s\n' "${VERSION}" > "${OUT}/version.txt"
 echo "Built howdy-next ${VERSION}"
