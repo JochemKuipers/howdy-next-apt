@@ -2,13 +2,17 @@
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 export DEB_CFLAGS_MAINT_APPEND = -Wall
-export DEB_CXXFLAGS_MAINT_APPEND = -Wall
 
 -include debian/build-env.mk
 
 HOWDY_DEPS_PREFIX ?= /opt/howdy-next-deps
 HOWDY_GIT_COMMIT ?=
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+# Vendored yyjson lives outside the default include path. Upstream links it
+# PRIVATE on howdy_user_model_codec, so howdy_user_models (which includes
+# that codec header) does not get -I and fails with yyjson.h not found.
+export DEB_CXXFLAGS_MAINT_APPEND = -Wall -isystem $(HOWDY_DEPS_PREFIX)/include
 
 export PKG_CONFIG_PATH := $(HOWDY_DEPS_PREFIX)/lib/pkgconfig$(if $(PKG_CONFIG_PATH),:$(PKG_CONFIG_PATH))
 export CMAKE_PREFIX_PATH := $(HOWDY_DEPS_PREFIX)
